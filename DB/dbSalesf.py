@@ -10,7 +10,7 @@ mydb = mysql.connector.connect(
 
 mydb.reset_session()
 my_cursor = mydb.cursor()
-
+  
 ##################################################### functions that control customer db
 
 def addPurchase(user, item, count, price, date):
