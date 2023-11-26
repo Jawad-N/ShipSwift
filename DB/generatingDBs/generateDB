@@ -2,7 +2,8 @@
 import mysql.connector 
 
 mydb = mysql.connector.connect(
-    host = "localhost",
+    host = "127.0.0.1",
+    port = 3307,
     user = "root",
     passwd = "12345",
 
@@ -13,7 +14,7 @@ mydb.reset_session()
 my_cursor = mydb.cursor()
 
 
-my_cursor.execute(" DROP DATABASE DB ") # comment this if you are executing this fill for the first time
+#my_cursor.execute(" DROP DATABASE DB ") # comment this if you are executing this fill for the first time
 mydb.commit()
 my_cursor.execute(" CREATE DATABASE DB ")
 mydb.commit()
@@ -44,7 +45,7 @@ for i in range(5):
     gender = 1 if i % 2 == 0 else 0  # 1 for True (Male), 0 for False (Female)
     maritalStatus = "single"
     wallet = 0
-    my_cursor.execute(f"""INSERT INTO customer(username, password,fullName, Address, Gender, maritalStatus)  
+    my_cursor.execute(f"""INSERT INTO customer(username, password,fullName, Address, Gender, maritalStatus, wallet)  
                       
                       VALUES( '{username}', '{password}',  '{fullName}', '{address}', {gender}, '{maritalStatus}', {wallet} )
     """)
@@ -58,7 +59,7 @@ for i in range(5):
     gender = 1 if i % 2 == 0 else 0  # 1 for True (Male), 0 for False (Female)
     maritalStatus = "single"
     wallet = 0
-    my_cursor.execute(f"""INSERT INTO customer(username, password ,fullName, Address, Gender, maritalStatus)  
+    my_cursor.execute(f"""INSERT INTO customer(username, password ,fullName, Address, Gender, maritalStatus, wallet)  
                       
                       VALUES( '{username}', '{password}', '{fullName}', '{address}', {gender}, '{maritalStatus}', {wallet} )
     """)
@@ -84,8 +85,9 @@ for i in range(10):
     price = 50
     description = "binadif"
     count = 5
+    wallet = 20
     my_cursor.execute(f"""
-        INSERT INTO customer(name, category, price, description, count)  
+        INSERT INTO inventory(name, category, price, description, count)  
         VALUES('{name}', '{category}', '{price}' , '{description}', {count})
     """)
     mydb.commit()
@@ -97,7 +99,7 @@ for i in range(10):
     description = "aninet may murex"
     count = 6
     my_cursor.execute(f"""
-        INSERT INTO customer(name, category, price, description, count)  
+        INSERT INTO inventory(name, category, price, description, count)  
         VALUES('{name}', '{category}', '{price}' , '{description}', {count})
     """)
     mydb.commit()
