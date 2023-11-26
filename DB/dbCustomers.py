@@ -1,6 +1,8 @@
 #inserting the basic info on the database
-# running this file will generate a db with tables : user, room, reservation
-# and fill up the room table with 15 instances 5 single, 5 double, and 5 suitess
+#this file is for the first time use only
+
+
+
 import mysql.connector 
 
 mydb = mysql.connector.connect(
@@ -26,6 +28,7 @@ mydb.commit()
 my_cursor.execute(f"""
 CREATE TABLE customer(
     id INT AUTO_INCREMENT PRIMARY KEY,
+    balance INT DEFAULT 0,
     username varchar(150) UNIQUE,
     password varchar(150),
     fullName varchar(150),
