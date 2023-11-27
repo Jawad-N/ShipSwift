@@ -4,7 +4,12 @@ import sys, os
 
 
 currentDir = os.path.dirname(os.path.realpath(__file__))
-connectorPath = os.path.join(currentDir, '../DB/dbCustomersf.py')
+connectorPath = os.path.join(currentDir, "..", "..")
+print(connectorPath)
+sys.path.append(connectorPath)
+
+from DB.dbCustomersf import * 
+
 
 customers_bp = Blueprint("customers", __name__) #Is a way of organizing a group of related views and other code. 
 
@@ -38,7 +43,7 @@ def get_customer(username):
 
 @customers_bp.route("/get", methods=["GET"])
 def get_customers():
-    return jsonify(dbCustomers.getCustomers())
+    return jsonify(getCustomers())
 
 @customers_bp.route("/charge/<username>", methods=["POST"])
 def charge_wallet(username):
