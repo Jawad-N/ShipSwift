@@ -1,6 +1,5 @@
 import mysql.connector 
 
-
 mydb = mysql.connector.connect(
     host = "127.0.0.1",
     user = "root",
@@ -90,5 +89,4 @@ def deduceCustomer(username, remove):
     my_cursor.execute(f"UPDATE customer SET wallet = {wallet_ - remove} WHERE username = {username}")
     mydb.commit()
     
-
 
