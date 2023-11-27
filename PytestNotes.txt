@@ -1,0 +1,7 @@
+Using pytest:
+
+1- Download pytest
+2- For file func.py, write test file func_test.py which contains the functions of func.py with the word test before them
+and tries to assert for some correct example
+
+can use pytest.approx for float results to avoid epsilon errors 

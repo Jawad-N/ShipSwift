@@ -4,7 +4,10 @@ import sys, os
 
 
 currentDir = os.path.dirname(os.path.realpath(__file__))
-connectorPath = os.path.join(currentDir, '../DB/dbCustomersf.py')
+connectorPath = os.path.join(currentDir, '../..')
+sys.path.append(connectorPath)
+
+from DB.dbCustomersf import *
 
 customers_bp = Blueprint("customers", __name__) #Is a way of organizing a group of related views and other code. 
 
