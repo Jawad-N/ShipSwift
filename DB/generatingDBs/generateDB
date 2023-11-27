@@ -3,10 +3,9 @@ import mysql.connector
 
 mydb = mysql.connector.connect(
     host = "127.0.0.1",
-    port = 3306,
+    port = 3307,
     user = "root",
     passwd = "12345",
-
 )
 
 mydb.reset_session()
@@ -14,7 +13,7 @@ mydb.reset_session()
 my_cursor = mydb.cursor()
 
 
-#my_cursor.execute(" DROP DATABASE DB ") # comment this if you are executing this fill for the first time
+my_cursor.execute(" DROP DATABASE DB ") # comment this if you are executing this fill for the first time
 mydb.commit()
 my_cursor.execute(" CREATE DATABASE DB ")
 mydb.commit()

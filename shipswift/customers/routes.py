@@ -1,10 +1,10 @@
 # customers/routes.py
 from flask import Blueprint, request, jsonify
-import sys
+import sys, os
 
-sys.path.append("..")
-import DB.dbCustomersf as dbCustomers
 
+currentDir = os.path.dirname(os.path.realpath(__file__))
+connectorPath = os.path.join(currentDir, '../DB/dbCustomersf.py')
 
 customers_bp = Blueprint("customers", __name__) #Is a way of organizing a group of related views and other code. 
 
