@@ -68,7 +68,7 @@ for i in range(5):
 my_cursor.execute(f"""
 CREATE TABLE inventory(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name varchar(150) NOT NULL,
+    name varchar(150) UNIQUE NOT NULL,
     category varchar(150) NOT NULL,
     price INT NOT NULL,
     description varchar(150),
@@ -78,30 +78,29 @@ CREATE TABLE inventory(
 
 mydb.commit()
 
-for i in range(10):
-    name = "spirto"
-    category = "cleaning"
-    price = 50
-    description = "binadif"
-    count = 5
-    wallet = 20
-    my_cursor.execute(f"""
-        INSERT INTO inventory(name, category, price, description, count)  
-        VALUES('{name}', '{category}', '{price}' , '{description}', {count})
-    """)
-    mydb.commit()
+name = "spirto"
+category = "cleaning"
+price = 50
+description = "binadif"
+count = 5
+wallet = 20
+my_cursor.execute(f"""
+    INSERT INTO inventory(name, category, price, description, count)  
+    VALUES('{name}', '{category}', '{price}' , '{description}', {count})
+""")
+mydb.commit()
 
-for i in range(10):
-    name = "water Bottle"
-    category = "equipment"
-    price = 100
-    description = "aninet may murex"
-    count = 6
-    my_cursor.execute(f"""
-        INSERT INTO inventory(name, category, price, description, count)  
-        VALUES('{name}', '{category}', '{price}' , '{description}', {count})
-    """)
-    mydb.commit()
+
+name = "water Bottle"
+category = "equipment"
+price = 100
+description = "aninet may murex"
+count = 6
+my_cursor.execute(f"""
+    INSERT INTO inventory(name, category, price, description, count)  
+    VALUES('{name}', '{category}', '{price}' , '{description}', {count})
+""")
+mydb.commit()
 
 
 
