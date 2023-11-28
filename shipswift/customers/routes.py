@@ -7,7 +7,7 @@ connectorPath = os.path.join(currentDir, "..", "..")
 print(connectorPath)
 sys.path.append(connectorPath)
 
-from DB.dbCustomersf import * 
+from DB.dbCustomersf import *
 
 
 customers_bp = Blueprint("customers", __name__) #Is a way of organizing a group of related views and other code. 
