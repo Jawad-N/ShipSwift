@@ -1,8 +1,4 @@
-from flask import request, Flask, jsonify
-import sys, os
-import json
 from __init__ import create_app
-from routes import customers_bp
 
 
 

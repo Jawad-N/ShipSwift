@@ -43,12 +43,11 @@ def delete_customer(username):
 
 
 #Tested Using Postman
-@customers_bp.route("/update/<username>", methods=["POST"])
+@customers_bp.route("/update/<username>", methods=["POST", "PUT"])
 def update_customer(username):
     D = getCustomer(username)
     if(len(D) == 0): return jsonify({"message": f"Customer {username} Not found"})
     data = request.get_json()
-    print(data)
     updateCustomer(username, data)
 
     return jsonify({"message": f"Customer {username} updated"})
@@ -59,6 +58,13 @@ def update_customer(username):
 def get_customer(username):
     return jsonify(getCustomer(username))
 
+@customers_bp.route("/reset", methods=["DELETE"])
+def reset_table():
+    try:
+        deleteCustomers()
+        return jsonify({"message":"Table has been emptied"})
+    except:
+        return jsonify({"message":"failure"})
 
 #Tested Using Postman
 @customers_bp.route("/get", methods=["GET"])

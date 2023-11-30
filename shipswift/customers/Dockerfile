@@ -7,6 +7,8 @@ WORKDIR /app
 # install the dependencies and packages in the requirements file
 RUN pip install -r requirements.txt
 # copy every content from the local file to the image
+# Copy the 'DB' directory from the root into the container at /app/DB
+COPY ../../DB /app/DB
 COPY . /app
 EXPOSE 5000
 CMD ["python3", "app.py"]
