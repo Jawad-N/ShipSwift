@@ -44,7 +44,7 @@ def test_get_customer(client):
 
 def test_get_customers(client):
 
-    routes.deleteCustomers()
+    routes.reset_table()
     # Register some customers for testing
     client.post("/api/customers/register", json={'username': 'user1', 'password': 'password1', 'fullName':'fullName1', 'address':'address1', 'gender':'gender1', 'maritalStatus':'maritalStatus1', 'wallet':0})
     client.post("/api/customers/register", json={'username': 'user2', 'password': 'password2', 'fullName':'fullName2', 'address':'address2', 'gender':'gender2', 'maritalStatus':'maritalStatus2', 'wallet':0})
@@ -62,8 +62,7 @@ def test_get_customers(client):
         assert all(key in response_data[username] for key in ["username", "password", "fullName", "Address", "Gender", "maritalStatus", "wallet"])
 
 
-def test_charge_wallet():
-    def test_charge_wallet(client):
+def test_charge_wallet(client):
     # Register a customer for testing
         client.post("/api/customers/register", json={'username': 'charge_test_user', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':100})
 
@@ -74,7 +73,7 @@ def test_charge_wallet():
         assert rv.status_code == 200  # Assuming a successful response status code
         assert rv.get_json() == {"message": "Wallet charged with 50 successfully"}
 
-def test_pay_wallet():
+def test_pay_wallet(client):
     # Register a customer for testing
     client.post("/api/customers/register", json={'username': 'pay_wallet_user', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':100})
     # Assuming pay_wallet updates the wallet and returns a message
