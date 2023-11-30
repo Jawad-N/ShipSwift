@@ -4,4 +4,8 @@ Using pytest:
 2- For file func.py, write test file func_test.py which contains the functions of func.py with the word test before them
 and tries to assert for some correct example
 
-can use pytest.approx for float results to avoid epsilon errors 
+# can use pytest.approx for float results to avoid epsilon errors 
+
+Can template input to test functions
+
+Use -v to write which tests r working
