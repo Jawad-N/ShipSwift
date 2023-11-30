@@ -36,9 +36,7 @@ def add_product():
 @inventory_bp.route("/update/<name>", methods=["PUT"])
 def update_product(name):
     data = request.get_json()
-    print(data)
     x = updateItem(name, data)
-    print(x)
     if (x == 0): return jsonify({"message": f"NO ITEM WITH NAME {name}"})
     elif (x == 1): return jsonify({"message": f"Product  updated"})
     elif (x == 2): return jsonify({"message": f"new Product Name is already Used"})
