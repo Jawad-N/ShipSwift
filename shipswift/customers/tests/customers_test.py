@@ -19,12 +19,16 @@ def client():
         yield client
 
 def test_register_customer(client):
-    rv = client.post("/api/customers/register", json={'username': 'username', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':'wallet'})
+    rv = client.post("/api/customers/register", json={'username': 'username3', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':'wallet'})
     assert rv.get_json() == {"message": "Customer registered successfully"}
 
 def test_delete_customer(client):
-    rv = client.delete('/delete', json={'username': 'username'})
-    assert rv.get_json() == {"message": "Customer username deleted"}
+    rv1 = client.post("/api/customers/register", json={'username': 'username2', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':'wallet'})
+    print(rv1.get_json())
+    rv2 = client.delete('/api/customers/delete/username2')
+    print(rv2.get_json())
+    assert rv2.get_json() == {"message": "Customer username2 deleted"}
+
 
 def test_update_customer(client):
     rv = client.put('/update', json={'username': 'username', 'new_data': 'new_data'})
