@@ -1,0 +1,123 @@
+
+import mysql.connector 
+
+mydb = mysql.connector.connect(
+    host = "127.0.0.1",
+    port = 3307,
+    user = "root",
+    passwd = "12345",
+)
+
+mydb.reset_session()
+
+my_cursor = mydb.cursor()
+
+
+my_cursor.execute(" DROP DATABASE DB ") # comment this if you are executing this fill for the first time
+mydb.commit()
+my_cursor.execute(" CREATE DATABASE DB ")
+mydb.commit()
+
+my_cursor.execute(" USE DB ")
+mydb.commit()
+
+my_cursor.execute(f"""
+CREATE TABLE customer(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username varchar(150) UNIQUE,
+    password varchar(150) NOT NULL,
+    fullName varchar(150) NOT NULL,
+    Address varchar(150) NOT NULL,
+    Gender Boolean NOT NULL,
+    maritalStatus varchar(150) NOT NULL,
+    wallet INT NOT NULL
+    )
+""")
+
+mydb.commit()
+
+for i in range(5):
+    username = f"{i}Jawad{i}"
+    password = f"{i}12345"
+    fullName = f"jawad{i}"
+    address = "airportRoad"
+    gender = 1 if i % 2 == 0 else 0  # 1 for True (Male), 0 for False (Female)
+    maritalStatus = "single"
+    wallet = 0
+    my_cursor.execute(f"""INSERT INTO customer(username, password,fullName, Address, Gender, maritalStatus, wallet)  
+                      
+                      VALUES( '{username}', '{password}',  '{fullName}', '{address}', {gender}, '{maritalStatus}', {wallet} )
+    """)
+    mydb.commit()
+
+for i in range(5):
+    username = f"{i}Alex{i}"
+    password = f"{i}12345"
+    fullName = f"alex{i}"
+    address = "sinelfil"
+    gender = 1 if i % 2 == 0 else 0  # 1 for True (Male), 0 for False (Female)
+    maritalStatus = "single"
+    wallet = 0
+    my_cursor.execute(f"""INSERT INTO customer(username, password ,fullName, Address, Gender, maritalStatus, wallet)  
+                      
+                      VALUES( '{username}', '{password}', '{fullName}', '{address}', {gender}, '{maritalStatus}', {wallet} )
+    """)
+    mydb.commit()
+
+
+my_cursor.execute(f"""
+CREATE TABLE inventory(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name varchar(150) UNIQUE NOT NULL,
+    category varchar(150) NOT NULL,
+    price INT NOT NULL,
+    description varchar(150),
+    count INT NOT NULL
+    )
+""")
+
+mydb.commit()
+
+name = "spirto"
+category = "cleaning"
+price = 50
+description = "binadif"
+count = 5
+wallet = 20
+my_cursor.execute(f"""
+    INSERT INTO inventory(name, category, price, description, count)  
+    VALUES('{name}', '{category}', '{price}' , '{description}', {count})
+""")
+mydb.commit()
+
+
+name = "water Bottle"
+category = "equipment"
+price = 100
+description = "aninet may murex"
+count = 6
+my_cursor.execute(f"""
+    INSERT INTO inventory(name, category, price, description, count)  
+    VALUES('{name}', '{category}', '{price}' , '{description}', {count})
+""")
+mydb.commit()
+
+
+
+my_cursor.execute(f"""
+CREATE TABLE log(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    buyer varchar(150) NOT NULL,
+    item varchar(150) NOT NULL,
+    count INT NOT NULL,
+    price INT NOT NULL,
+    date DATE
+    )
+""")
+
+mydb.commit()
+
+##### DATA BASE made to be initially empty
+
+
+

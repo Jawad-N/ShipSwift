@@ -1,0 +1,8 @@
+/*
+
+This Folder contains everything related to databases
+The 3 folders dbCustomer dbInventory & dbSales are generating  dummy databases
+
+The folders dbCustomerf dbInventoryf & dbSalesf contain functions that communicate with the databases
+
+*/
