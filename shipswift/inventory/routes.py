@@ -1,12 +1,12 @@
 #Inventory routes
 from flask import Blueprint, request, jsonify
 import sys, os
-
+"""
 currentDir = os.path.dirname(os.path.realpath(__file__))
 connectorPath = os.path.join(currentDir, "..", "..")
 print(connectorPath)
 sys.path.append(connectorPath)
-
+"""
 from DB.dbInventoryf import * 
 
 

@@ -14,9 +14,8 @@ my_cursor = mydb.cursor()
   
 ##################################################### functions that control customer db
 
-def addPurchase(user, item, count, price, date):
+def addPurchase(user, item, count, price, date): #Note that date is a timestamp so when entered to the table it automatically calls NOW() in mysql to record the current time
     my_cursor.execute(f"""
-    INSERT INTO log(buyer, item, count, price, date)    
-        VALUES('{user}', '{item}', {count}, {price}, {date})  
-                    
+    INSERT INTO log(buyer, item, count, price)     
+        VALUES('{user}', '{item}', {count}, {price})        
 """)

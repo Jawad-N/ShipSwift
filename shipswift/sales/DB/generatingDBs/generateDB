@@ -111,7 +111,7 @@ CREATE TABLE log(
     item varchar(150) NOT NULL,
     count INT NOT NULL,
     price INT NOT NULL,
-    date TIMESTAMP
+    date DATE
     )
 """)
 

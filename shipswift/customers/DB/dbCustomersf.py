@@ -74,9 +74,7 @@ def deleteCustomer(username):
     my_cursor.execute(f"DELETE FROM customer WHERE username = \"{username}\"")
     mydb.commit()
 
-def deleteCustomers():
-    my_cursor.execute(f"DELETE FROM customer;")
-    mydb.commit()
+
 
 #Get the entire DB of customers
 def getCustomers():
