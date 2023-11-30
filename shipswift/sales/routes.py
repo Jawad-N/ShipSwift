@@ -41,7 +41,7 @@ def add_product():
     #apicall_users = "http://$IP_users:5000/api/" #TODO
     if(x == False): return jsonify({"message": "Mentioned User does not exist"})
     y = getItem(item)
-    if( y == False ): return jsonify({"message": "Mentoioned User does not exist"})
+    if( y == False ): return jsonify({"message": "Mentioned item does not exist"})
     addPurchase(user, item, count)
     return jsonify({"message": "Purchase added successfully"})
 

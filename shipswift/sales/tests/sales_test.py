@@ -9,7 +9,7 @@ sys.path.append(connectorPath)
 import routes
 
 app = Flask(__name__)
-app.register_blueprint(routes.customers_bp, url_prefix="/api/routes")
+app.register_blueprint(routes.customers_bp, url_prefix="/api/inventory")
 
 
 
@@ -21,6 +21,10 @@ def client():
         yield client
 
 def test_add_product(client):
-    rv = client.post("/api/routes/add", json={'user': "user", 'item': "item", 'count': 1, 'price': 1, 'date': "date"})
+    #successful add
+    rv = client.post("/")
+    rv2 = client.post("/api/inventory/add", json={'user': "user", 'item': "item", 'count': 1, 'date': "date"})
     assert rv.status_code == 200  # Assuming a successful response status code
-    assert rv.get_json() == {"message": "Product added successfully"}
+    assert rv.get_json() == {"message": "Purchase added successfully"}
+
+    #user does not exist
