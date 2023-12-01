@@ -465,3 +465,49 @@ def get_products():
     if(D == False): return jsonify({"message": "FAILURE IN DISPLAYING INVENTORY"})
     else: return jsonify(D)
     
+
+@inventory_bp.route("/delete", methods=["DELETE"])
+def reset_inventory():
+    """
+    Endpoint to reset the inventory.
+
+    This route handles DELETE requests to reset the inventory.
+
+    **Method:** DELETE
+
+    **URL:** `/api/inventory/delete`
+
+    **Parameters:**
+    None
+
+    **Returns:**
+    - If the inventory is successfully reset, returns a JSON response with a success message:
+      ```json
+      {"message": "Inventory reset successfully"}
+      ```
+
+    - If there's a failure in the database operation, returns a JSON response with a failure message:
+      ```json
+      {"message": "FAILURE IN DATABASE"}
+      ```
+
+    **Example Usage (Postman):**
+    - Method: DELETE
+    - URL: `http://your-api-base-url/api/inventory/delete`
+
+    - Expected Response (Success):
+      ```json
+      {"message": "Inventory reset successfully"}
+      ```
+
+    - Expected Response (Failure in Database):
+      ```json
+      {"message": "FAILURE IN DATABASE"}
+      ```
+
+    **Testing:**
+    - This endpoint has been tested using Postman.
+    """
+    x = deleteAll()
+    if(x == 0): return jsonify({"message": "Inventory reset successfully"})
+    else: return jsonify({"message": "FAILURE IN DATABASE"})
