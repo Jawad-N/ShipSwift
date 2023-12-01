@@ -12,7 +12,7 @@ mydb = mysql.connector.connect(
 mydb.reset_session()
 my_cursor = mydb.cursor()
 my_cursor.execute("USE DB")
-
+mydb.commit()
 
 ##################### Functions that control the db of the inventory
 
