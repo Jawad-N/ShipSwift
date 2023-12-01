@@ -1,7 +1,7 @@
 import mysql.connector 
 
 mydb = mysql.connector.connect(
-    host = "172.17.0.1",
+    host = "127.0.0.1",
     user = "root",
     passwd = "12345",
     port = 3307
@@ -68,6 +68,9 @@ def updateCustomer(username, D):
             mydb.commit()
 
 
+def deleteCustomers():
+    my_cursor.execute(f"DELETE FROM customer;")
+    mydb.commit()
 
 #You delete the user by his username
 def deleteCustomer(username):

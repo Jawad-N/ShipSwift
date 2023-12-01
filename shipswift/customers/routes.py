@@ -1,12 +1,12 @@
 # customers/routes.py
 from flask import Blueprint, request, jsonify
 import sys, os
-
+'''
 currentDir = os.path.dirname(os.path.realpath(__file__))
 connectorPath = os.path.join(currentDir, "..", "..")
 print(connectorPath)
 sys.path.append(connectorPath)
-
+'''
 from DB.dbCustomersf import *
 
 
@@ -43,14 +43,17 @@ def delete_customer(username):
 
 
 #Tested Using Postman
-@customers_bp.route("/update/<username>", methods=["POST", "PUT"])
+@customers_bp.route("/update/<username>", methods=["POST"])
 def update_customer(username):
+
     D = getCustomer(username)
     if(len(D) == 0): return jsonify({"message": f"Customer {username} Not found"})
     data = request.get_json()
-    updateCustomer(username, data)
-
-    return jsonify({"message": f"Customer {username} updated"})
+    newName = getCustomer(data["username"])
+    if(len(newName) != 0): return jsonify({"message": f"Requested new Name already exist"})
+    else:
+        updateCustomer(username, data)
+        return jsonify({"message": f"Customer {username} updated"})
 
 
 #Tested Using Postman
