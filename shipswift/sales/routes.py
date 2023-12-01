@@ -103,6 +103,7 @@ def add_transaction():
     **Testing:**
     - This endpoint has been tested using Postman.
     """
+    
     data = request.get_json()
     user = data["user"]
     item = data["item"]
