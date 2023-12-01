@@ -3,11 +3,11 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 import sys,os
-currentDir = os.path.dirname(os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'shitswift'
+project = 'shipswift'
 copyright = '2023, donc'
 author = 'donc'
 
@@ -15,8 +15,7 @@ author = 'donc'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon","sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.githubpages"]
-
-autodoc_mock_imports = ["flask","DB","ShipSwift"]
+autodoc_mock_imports = ["flask","DB"]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 

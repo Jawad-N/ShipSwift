@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShipSwift.sales.routes &#8212; shipswift  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ShipSwift.sales.routes</h1><div class="highlight"><pre>
+<span></span><span class="c1"># customers/routes.py</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="n">currentDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">connectorPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">currentDir</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connectorPath</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">connectorPath</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">DB.dbSalesf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">salesbp</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1">#Our Transaction requires the parameters:</span>
+<span class="c1">#User who wants to make the transaction defined by their username</span>
+<span class="c1">#The item he wants to buy</span>
+<span class="c1">#The number of units that he wants to buy </span>
+<span class="c1">#Also we will mark the transaction date</span>
+<span class="c1"># Last functionality communicate between dockers</span>
+<div class="viewcode-block" id="add_transaction">
+<a class="viewcode-back" href="../../../ShipSwift.sales.html#ShipSwift.sales.routes.add_transaction">[docs]</a>
+<span class="nd">@salesbp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/transaction&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_transaction</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to add a new transaction.</span>
+
+<span class="sd">    This route handles POST requests to add a new transaction. The transaction involves a user making a purchase of a specific item with a specified quantity.</span>
+
+<span class="sd">    **Method:** POST</span>
+
+<span class="sd">    **URL:** `/api/sales/transaction`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `user` (str): The username of the user making the transaction.</span>
+<span class="sd">    - `item` (str): The name of the item being purchased.</span>
+<span class="sd">    - `count` (int): The quantity of units being purchased.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If the user does not exist, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;User Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the item is not found, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item not found&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the user has insufficient balance, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Insufficient Balance with user &lt;username&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there is insufficient stock for the item, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Insufficient stock for item &lt;item&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the transaction is successful, returns a JSON response with a success message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Purchase added successfully&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: POST</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/sales/transaction`</span>
+<span class="sd">    - Body (JSON):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {</span>
+<span class="sd">        &quot;user&quot;: &quot;username&quot;,</span>
+<span class="sd">        &quot;item&quot;: &quot;item_name&quot;,</span>
+<span class="sd">        &quot;count&quot;: 2</span>
+<span class="sd">      }</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (User Does Not Exist):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;User Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Item not found):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item not found&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Insufficient Balance):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Insufficient Balance with user &lt;username&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Insufficient Stock):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Insufficient stock for item &lt;item&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Purchase added successfully):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Purchase added successfully&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Note:**</span>
+<span class="sd">    - This endpoint communicates with other services using their respective APIs to perform actions such as checking user details, retrieving item information, updating user wallets, and updating item stock.</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
+
+    
+    <span class="n">apicall_getUser</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://127.0.0.3:5000/api/customers/get/</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span> <span class="c1">#TODO</span>
+    <span class="n">response_getUser</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">apicall_getUser</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="c1"># Works!</span>
+
+
+    <span class="k">if</span> <span class="n">response_getUser</span> <span class="o">==</span> <span class="p">{}:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;User Does Not Exist&quot;</span><span class="p">})</span> <span class="c1">#functional Error!</span>
+
+    <span class="n">apicall_getItem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://127.0.0.4:5001/api/inventory/get/</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">response_getItem</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">apicall_getItem</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response_getItem</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span> <span class="ow">in</span> <span class="n">response_getItem</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">):</span> <span class="c1">#functional Error!</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Item not found&quot;</span><span class="p">})</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">response_getItem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="n">id_</span> 
+
+    <span class="c1">#Here both item and guy are found, what remains before doing the transaction is checking that the user has enough and there&#39;s enough stock to do the transaction </span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">response_getUser</span><span class="p">[</span><span class="s2">&quot;wallet&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">count</span> <span class="o">*</span> <span class="n">response_getItem</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">&quot;price&quot;</span><span class="p">]</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Insufficient Balance with user </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+    <span class="k">elif</span> <span class="p">(</span> <span class="n">response_getItem</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">count</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Insufficient stock for item </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+
+    <span class="c1"># if we make it here then transaction can be made, we update the log</span>
+    <span class="n">addPurchase</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">response_getItem</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">&quot;price&quot;</span><span class="p">])</span>
+    <span class="n">apicall_updateWallet</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://127.0.0.3:5000/api/customers/pay/</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">count</span> <span class="o">*</span> <span class="n">response_getItem</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">&quot;price&quot;</span><span class="p">]</span> 
+    <span class="n">response_payUser</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">apicall_updateWallet</span><span class="p">,</span> <span class="n">json</span> <span class="o">=</span>  <span class="p">{</span> <span class="s2">&quot;amount&quot;</span><span class="p">:</span> <span class="n">amount</span> <span class="p">}</span>  <span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="n">response_payUser</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="o">!=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Wallet paid </span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> successfully&quot;</span><span class="p">}</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error Occured In payment&quot;</span><span class="p">})</span>
+    
+
+    <span class="n">apicall_updateStock</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://127.0.0.4:5001/api/inventory/deduce/</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">response_deduceStock</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">apicall_updateStock</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">response_deduceStock</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="o">!=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The stock of </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2"> is decreased by </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error Occured in stock update&quot;</span><span class="p">})</span> <span class="c1"># This might lead to a synchronization problem since transactions are not atomic</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span> <span class="p">{</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Purchase added successfully&quot;</span> <span class="p">}</span> <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="getGoods">
+<a class="viewcode-back" href="../../../ShipSwift.sales.html#ShipSwift.sales.routes.getGoods">[docs]</a>
+<span class="nd">@salesbp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/list&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">getGoods</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to retrieve a list of available goods.</span>
+
+<span class="sd">    This route handles GET requests to retrieve a list of available goods. The list includes details about each item, such as name, category, price, description, and quantity.</span>
+
+<span class="sd">    **Method:** GET</span>
+
+<span class="sd">    **URL:** `/api/sales/list`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    None</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If successful, returns a JSON response with the list of goods.</span>
+<span class="sd">    - If there is an error from the database, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Error from DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: GET</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/sales/list`</span>
+
+<span class="sd">    - Expected Response (Successful):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      [</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;name&quot;: &quot;item1&quot;,</span>
+<span class="sd">          &quot;category&quot;: &quot;category1&quot;,</span>
+<span class="sd">          &quot;price&quot;: 10.99,</span>
+<span class="sd">          &quot;description&quot;: &quot;Description of item1&quot;,</span>
+<span class="sd">          &quot;quantity&quot;: 50</span>
+<span class="sd">        },</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;name&quot;: &quot;item2&quot;,</span>
+<span class="sd">          &quot;category&quot;: &quot;category2&quot;,</span>
+<span class="sd">          &quot;price&quot;: 19.99,</span>
+<span class="sd">          &quot;description&quot;: &quot;Description of item2&quot;,</span>
+<span class="sd">          &quot;quantity&quot;: 30</span>
+<span class="sd">        },</span>
+<span class="sd">        ...</span>
+<span class="sd">      ]</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Error from DB):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Error from DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Note:**</span>
+<span class="sd">    - This endpoint retrieves the list of goods from the database and returns it as a JSON response.</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">listItems</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error from DB&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">D</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="getGood">
+<a class="viewcode-back" href="../../../ShipSwift.sales.html#ShipSwift.sales.routes.getGood">[docs]</a>
+<span class="nd">@salesbp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/list/&lt;good&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">getGood</span><span class="p">(</span><span class="n">good</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to retrieve details about a specific good.</span>
+
+<span class="sd">    This route handles GET requests to retrieve details about a specific good identified by its name.</span>
+
+<span class="sd">    **Method:** GET</span>
+
+<span class="sd">    **URL:** `/api/sales/list/{good}`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `good` (str): The name of the good for which details are requested.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If successful, returns a JSON response with details about the specified good.</span>
+<span class="sd">    - If there is an error from the database or the good is not found, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;ERROR FROM DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: GET</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/sales/list/item1`</span>
+
+<span class="sd">    - Expected Response (Successful):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {</span>
+<span class="sd">        &quot;name&quot;: &quot;item1&quot;,</span>
+<span class="sd">        &quot;category&quot;: &quot;category1&quot;,</span>
+<span class="sd">        &quot;price&quot;: 10.99,</span>
+<span class="sd">        &quot;description&quot;: &quot;Description of item1&quot;,</span>
+<span class="sd">        &quot;quantity&quot;: 50</span>
+<span class="sd">      }</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Error from DB or Good Not Found):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;ERROR FROM DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Note:**</span>
+<span class="sd">    - This endpoint retrieves details about a specific good from the database and returns it as a JSON response.</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">listItem</span><span class="p">(</span><span class="n">good</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR FROM DB&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">D</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="History">
+<a class="viewcode-back" href="../../../ShipSwift.sales.html#ShipSwift.sales.routes.History">[docs]</a>
+<span class="nd">@salesbp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/history/&lt;user&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">History</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to retrieve transaction history for a specific user.</span>
+
+<span class="sd">    This route handles GET requests to retrieve the transaction history for a specific user identified by their username.</span>
+
+<span class="sd">    **Method:** GET</span>
+
+<span class="sd">    **URL:** `/api/sales/history/{user}`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `user` (str): The username of the user for whom the transaction history is requested.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If successful and the user has transaction history, returns a JSON response with the user&#39;s transaction history.</span>
+<span class="sd">    - If there is an error from the database, the user does not exist, or the user has no transactions, returns a JSON response with an appropriate message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;ERROR FROM DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: GET</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/sales/history/username`</span>
+
+<span class="sd">    - Expected Response (Successful with History):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      [</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;transaction_id&quot;: 1,</span>
+<span class="sd">          &quot;user&quot;: &quot;username&quot;,</span>
+<span class="sd">          &quot;item&quot;: &quot;item1&quot;,</span>
+<span class="sd">          &quot;count&quot;: 2,</span>
+<span class="sd">          &quot;price_per_unit&quot;: 10.99,</span>
+<span class="sd">          &quot;transaction_date&quot;: &quot;2023-12-01 12:30:45&quot;</span>
+<span class="sd">        },</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;transaction_id&quot;: 2,</span>
+<span class="sd">          &quot;user&quot;: &quot;username&quot;,</span>
+<span class="sd">          &quot;item&quot;: &quot;item2&quot;,</span>
+<span class="sd">          &quot;count&quot;: 3,</span>
+<span class="sd">          &quot;price_per_unit&quot;: 19.99,</span>
+<span class="sd">          &quot;transaction_date&quot;: &quot;2023-12-02 14:45:30&quot;</span>
+<span class="sd">        },</span>
+<span class="sd">        ...</span>
+<span class="sd">      ]</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Error from DB or User Not Found or No Transactions):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;ERROR FROM DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Note:**</span>
+<span class="sd">    - This endpoint retrieves the transaction history for a specific user from the database and returns it as a JSON response.</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">user_log</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR FROM DB&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="p">{}):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;user did not make any transactions yet&quot;</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">D</span><span class="p">)</span></div>
+
+
+
+
+
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">shipswift</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">ShipSwift</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../sales.html">ShipSwift.sales</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, donc.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

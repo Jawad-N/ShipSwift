@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ShipSwift.sales package &#8212; shitswift  documentation</title>
+    <title>ShipSwift.sales package &#8212; shipswift  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -39,15 +39,15 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ShipSwift.sales.DB.html">ShipSwift.sales.DB package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#module-ShipSwift.sales.DB.dbCustomersf">ShipSwift.sales.DB.dbCustomersf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#module-ShipSwift.sales.DB.dbInventoryf">ShipSwift.sales.DB.dbInventoryf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#module-ShipSwift.sales.DB.dbSalesf">ShipSwift.sales.DB.dbSalesf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#shipswift-sales-db-dbcustomersf-module">ShipSwift.sales.DB.dbCustomersf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#shipswift-sales-db-dbinventoryf-module">ShipSwift.sales.DB.dbInventoryf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#shipswift-sales-db-dbsalesf-module">ShipSwift.sales.DB.dbSalesf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.DB.html#module-ShipSwift.sales.DB">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ShipSwift.sales.tests.html">ShipSwift.sales.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.tests.html#module-ShipSwift.sales.tests.sales_test">ShipSwift.sales.tests.sales_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.tests.html#shipswift-sales-tests-sales-test-module">ShipSwift.sales.tests.sales_test module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.sales.tests.html#module-ShipSwift.sales.tests">Module contents</a></li>
 </ul>
 </li>
@@ -57,17 +57,267 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="module-ShipSwift.sales.app">
-<span id="shipswift-sales-app-module"></span><h2>ShipSwift.sales.app module<a class="headerlink" href="#module-ShipSwift.sales.app" title="Link to this heading">¶</a></h2>
+<section id="shipswift-sales-app-module">
+<h2>ShipSwift.sales.app module<a class="headerlink" href="#shipswift-sales-app-module" title="Link to this heading">¶</a></h2>
 </section>
-<section id="module-ShipSwift.sales.models">
-<span id="shipswift-sales-models-module"></span><h2>ShipSwift.sales.models module<a class="headerlink" href="#module-ShipSwift.sales.models" title="Link to this heading">¶</a></h2>
+<section id="shipswift-sales-models-module">
+<h2>ShipSwift.sales.models module<a class="headerlink" href="#shipswift-sales-models-module" title="Link to this heading">¶</a></h2>
 </section>
 <section id="module-ShipSwift.sales.routes">
 <span id="shipswift-sales-routes-module"></span><h2>ShipSwift.sales.routes module<a class="headerlink" href="#module-ShipSwift.sales.routes" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.sales.routes.History">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.sales.routes.</span></span><span class="sig-name descname"><span class="pre">History</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/sales/routes.html#History"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.sales.routes.History" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to retrieve transaction history for a specific user.</p>
+<p>This route handles GET requests to retrieve the transaction history for a specific user identified by their username.</p>
+<p><strong>Method:</strong> GET</p>
+<p><strong>URL:</strong> <cite>/api/sales/history/{user}</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>user</cite> (str): The username of the user for whom the transaction history is requested.</p>
+<p><strong>Returns:</strong>
+- If successful and the user has transaction history, returns a JSON response with the user’s transaction history.
+- If there is an error from the database, the user does not exist, or the user has no transactions, returns a JSON response with an appropriate message:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;ERROR</span> <span class="pre">FROM</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p><strong>Example Usage (Postman):</strong>
+- Method: GET
+- URL: <cite>http://your-api-base-url/api/sales/history/username</cite></p>
+<ul>
+<li><p>Expected Response (Successful with History):
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>json
+[</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“transaction_id”: 1,
+“user”: “username”,
+“item”: “item1”,
+“count”: 2,
+“price_per_unit”: 10.99,
+“transaction_date”: “2023-12-01 12:30:45”</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“transaction_id”: 2,
+“user”: “username”,
+“item”: “item2”,
+“count”: 3,
+“price_per_unit”: 19.99,
+“transaction_date”: “2023-12-02 14:45:30”</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p>Expected Response (Error from DB or User Not Found or No Transactions):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;ERROR</span> <span class="pre">FROM</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Note:</strong>
+- This endpoint retrieves the transaction history for a specific user from the database and returns it as a JSON response.</p>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.sales.routes.add_transaction">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.sales.routes.</span></span><span class="sig-name descname"><span class="pre">add_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/sales/routes.html#add_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.sales.routes.add_transaction" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to add a new transaction.</p>
+<p>This route handles POST requests to add a new transaction. The transaction involves a user making a purchase of a specific item with a specified quantity.</p>
+<p><strong>Method:</strong> POST</p>
+<p><strong>URL:</strong> <cite>/api/sales/transaction</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>user</cite> (str): The username of the user making the transaction.
+- <cite>item</cite> (str): The name of the item being purchased.
+- <cite>count</cite> (int): The quantity of units being purchased.</p>
+<p><strong>Returns:</strong>
+- If the user does not exist, returns a JSON response with a failure message:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;User</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the item is not found, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">not</span> <span class="pre">found&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the user has insufficient balance, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Insufficient</span> <span class="pre">Balance</span> <span class="pre">with</span> <span class="pre">user</span> <span class="pre">&lt;username&gt;&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If there is insufficient stock for the item, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Insufficient</span> <span class="pre">stock</span> <span class="pre">for</span> <span class="pre">item</span> <span class="pre">&lt;item&gt;&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the transaction is successful, returns a JSON response with a success message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Purchase</span> <span class="pre">added</span> <span class="pre">successfully&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: POST
+- URL: <cite>http://your-api-base-url/api/sales/transaction</cite>
+- Body (JSON):</p>
+<blockquote>
+<div><p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“user”: “username”,
+“item”: “item_name”,
+“count”: 2</p>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p>Expected Response (User Does Not Exist):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;User</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Item not found):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">not</span> <span class="pre">found&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Insufficient Balance):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Insufficient</span> <span class="pre">Balance</span> <span class="pre">with</span> <span class="pre">user</span> <span class="pre">&lt;username&gt;&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Insufficient Stock):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Insufficient</span> <span class="pre">stock</span> <span class="pre">for</span> <span class="pre">item</span> <span class="pre">&lt;item&gt;&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Purchase added successfully):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Purchase</span> <span class="pre">added</span> <span class="pre">successfully&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Note:</strong>
+- This endpoint communicates with other services using their respective APIs to perform actions such as checking user details, retrieving item information, updating user wallets, and updating item stock.</p>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.sales.routes.getGood">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.sales.routes.</span></span><span class="sig-name descname"><span class="pre">getGood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">good</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/sales/routes.html#getGood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.sales.routes.getGood" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to retrieve details about a specific good.</p>
+<p>This route handles GET requests to retrieve details about a specific good identified by its name.</p>
+<p><strong>Method:</strong> GET</p>
+<p><strong>URL:</strong> <cite>/api/sales/list/{good}</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>good</cite> (str): The name of the good for which details are requested.</p>
+<p><strong>Returns:</strong>
+- If successful, returns a JSON response with details about the specified good.
+- If there is an error from the database or the good is not found, returns a JSON response with a failure message:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;ERROR</span> <span class="pre">FROM</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p><strong>Example Usage (Postman):</strong>
+- Method: GET
+- URL: <cite>http://your-api-base-url/api/sales/list/item1</cite></p>
+<ul>
+<li><p>Expected Response (Successful):
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“name”: “item1”,
+“category”: “category1”,
+“price”: 10.99,
+“description”: “Description of item1”,
+“quantity”: 50</p>
+</div></blockquote>
+</li>
+<li><p>Expected Response (Error from DB or Good Not Found):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;ERROR</span> <span class="pre">FROM</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Note:</strong>
+- This endpoint retrieves details about a specific good from the database and returns it as a JSON response.</p>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.sales.routes.getGoods">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.sales.routes.</span></span><span class="sig-name descname"><span class="pre">getGoods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/sales/routes.html#getGoods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.sales.routes.getGoods" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to retrieve a list of available goods.</p>
+<p>This route handles GET requests to retrieve a list of available goods. The list includes details about each item, such as name, category, price, description, and quantity.</p>
+<p><strong>Method:</strong> GET</p>
+<p><strong>URL:</strong> <cite>/api/sales/list</cite></p>
+<p><strong>Parameters:</strong>
+None</p>
+<p><strong>Returns:</strong>
+- If successful, returns a JSON response with the list of goods.
+- If there is an error from the database, returns a JSON response with a failure message:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Error</span> <span class="pre">from</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p><strong>Example Usage (Postman):</strong>
+- Method: GET
+- URL: <cite>http://your-api-base-url/api/sales/list</cite></p>
+<ul>
+<li><p>Expected Response (Successful):
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a>json
+[</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“name”: “item1”,
+“category”: “category1”,
+“price”: 10.99,
+“description”: “Description of item1”,
+“quantity”: 50</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “item2”,
+“category”: “category2”,
+“price”: 19.99,
+“description”: “Description of item2”,
+“quantity”: 30</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p>Expected Response (Error from DB):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Error</span> <span class="pre">from</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Note:</strong>
+- This endpoint retrieves the list of goods from the database and returns it as a JSON response.</p>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
 </section>
 <section id="module-ShipSwift.sales">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ShipSwift.sales" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.sales.create_app">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.sales.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/sales.html#create_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.sales.create_app" title="Link to this definition">¶</a></dt>
+<dd><p>Create and configure the Flask application for the customers service.</p>
+<p>This function initializes a Flask application instance and registers the blueprints (routes) for the sales service.</p>
+<p><strong>Returns:</strong>
+- Flask Application: An instance of the Flask application configured for the customers service.</p>
+<p><strong>Example Usage:</strong>
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+from customers import create_app</p>
+<p>app = create_app()
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p><strong>Note:</strong>
+- The function uses the Flask <cite>Blueprint</cite> named <cite>salesbp</cite> from the <cite>routes</cite> module.</p>
+<p><strong>Testing:</strong>
+- This function is typically called in the main application script to create the Flask app for the customers service.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -78,7 +328,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">shitswift</a></h1>
+<h1 class="logo"><a href="index.html">shipswift</a></h1>
 
 
 

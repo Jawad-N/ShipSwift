@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ShipSwift.inventory package &#8212; shitswift  documentation</title>
+    <title>ShipSwift.inventory package &#8212; shipswift  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -39,15 +39,15 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ShipSwift.inventory.DB.html">ShipSwift.inventory.DB package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#module-ShipSwift.inventory.DB.dbCustomersf">ShipSwift.inventory.DB.dbCustomersf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#module-ShipSwift.inventory.DB.dbInventoryf">ShipSwift.inventory.DB.dbInventoryf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#module-ShipSwift.inventory.DB.dbSalesf">ShipSwift.inventory.DB.dbSalesf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#shipswift-inventory-db-dbcustomersf-module">ShipSwift.inventory.DB.dbCustomersf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#shipswift-inventory-db-dbinventoryf-module">ShipSwift.inventory.DB.dbInventoryf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#shipswift-inventory-db-dbsalesf-module">ShipSwift.inventory.DB.dbSalesf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.DB.html#module-ShipSwift.inventory.DB">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ShipSwift.inventory.tests.html">ShipSwift.inventory.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.tests.html#module-ShipSwift.inventory.tests.inventory_test">ShipSwift.inventory.tests.inventory_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.tests.html#shipswift-inventory-tests-inventory-test-module">ShipSwift.inventory.tests.inventory_test module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ShipSwift.inventory.tests.html#module-ShipSwift.inventory.tests">Module contents</a></li>
 </ul>
 </li>
@@ -57,14 +57,396 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="module-ShipSwift.inventory.app">
-<span id="shipswift-inventory-app-module"></span><h2>ShipSwift.inventory.app module<a class="headerlink" href="#module-ShipSwift.inventory.app" title="Link to this heading">¶</a></h2>
+<section id="shipswift-inventory-app-module">
+<h2>ShipSwift.inventory.app module<a class="headerlink" href="#shipswift-inventory-app-module" title="Link to this heading">¶</a></h2>
 </section>
 <section id="module-ShipSwift.inventory.routes">
 <span id="shipswift-inventory-routes-module"></span><h2>ShipSwift.inventory.routes module<a class="headerlink" href="#module-ShipSwift.inventory.routes" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.add_product">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">add_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#add_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.add_product" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to add a new product to the inventory.</p>
+<p>This route handles POST requests to add a new product to the inventory based on the provided JSON data.</p>
+<p><strong>Method:</strong> POST</p>
+<p><strong>URL:</strong> <cite>/api/inventory/add</cite></p>
+<p><strong>Request Data (JSON):</strong>
+- <cite>name</cite> (str): The name of the product.
+- <cite>category</cite> (str): The category of the product.
+- <cite>price</cite> (float): The price of the product.
+- <cite>description</cite> (str): The description of the product.
+- <cite>count</cite> (int): The quantity of the product.</p>
+<p><strong>Returns:</strong>
+- If a product with the same name already exists in the database, returns a JSON response indicating the duplication:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">with</span> <span class="pre">name</span> <span class="pre">=</span> <span class="pre">&lt;name&gt;</span> <span class="pre">already</span> <span class="pre">in</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the product is successfully added, returns a JSON response with a success message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">added</span> <span class="pre">successfully&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If there’s an error during the database operation, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DATABASE&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: POST
+- URL: <cite>http://your-api-base-url/api/inventory/add</cite>
+- Body (JSON):</p>
+<blockquote>
+<div><p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“name”: “New Product”,
+“category”: “Electronics”,
+“price”: 99.99,
+“description”: “A description of the new product.”,
+“count”: 10</p>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p>Expected Response (Duplicate Product):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">with</span> <span class="pre">name</span> <span class="pre">=</span> <span class="pre">New</span> <span class="pre">Product</span> <span class="pre">already</span> <span class="pre">in</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Success):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">added</span> <span class="pre">successfully&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Failure in Database):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DATABASE&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.deduce_product">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">deduce_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#deduce_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.deduce_product" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to deduce the stock of a product in the inventory.</p>
+<p>This route handles PUT requests to deduce the stock of a product in the inventory based on the provided product name.</p>
+<p><strong>Method:</strong> PUT</p>
+<p><strong>URL:</strong> <cite>/api/inventory/deduce/&lt;name&gt;</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>name</cite> (str): The name of the product to deduce the stock.</p>
+<p><strong>Returns:</strong>
+- If no product with the provided name is found, returns a JSON response indicating that the item does not exist:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">&lt;name&gt;</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the stock of the product is empty, returns a JSON response indicating that the stock is empty:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">empty&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the stock of the product is successfully decreased by 1, returns a JSON response with a success message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">decreased</span> <span class="pre">by</span> <span class="pre">1&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If there’s an error during the database operation, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: PUT
+- URL: <cite>http://your-api-base-url/api/inventory/deduce/&lt;name&gt;</cite></p>
+<ul class="simple">
+<li><p>Expected Response (Item Does Not Exist):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">&lt;name&gt;</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Stock is Empty):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">empty&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Stock Decreased by 1):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">decreased</span> <span class="pre">by</span> <span class="pre">1&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Failure in Database):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.deduce_product2">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">deduce_product2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#deduce_product2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.deduce_product2" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to custom deduce the stock of a product in the inventory.</p>
+<p>This route handles PUT requests to custom deduce the stock of a product in the inventory based on the provided product name and custom deduction value.</p>
+<p><strong>Method:</strong> PUT</p>
+<p><strong>URL:</strong> <cite>/api/inventory/deduce/&lt;name&gt;/&lt;val&gt;</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>name</cite> (str): The name of the product to deduce the stock.
+- <cite>val</cite> (int): The custom deduction value for the stock. Must be a positive integer.</p>
+<p><strong>Returns:</strong>
+- If no product with the provided name is found, returns a JSON response indicating that the item does not exist:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">&lt;name&gt;</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the stock of the product is empty, returns a JSON response indicating that the stock is empty:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">empty&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the stock of the product is successfully decreased by the custom value, returns a JSON response with a success message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">f&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">decreased</span> <span class="pre">by</span> <span class="pre">{val}&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If there’s an error during the database operation, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the provided custom deduction value is not a positive integer, returns a plain text response indicating that the URL does not exist:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">&quot;URL</span> <span class="pre">DNE&quot;</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: PUT
+- URL: <cite>http://your-api-base-url/api/inventory/deduce/&lt;name&gt;/&lt;val&gt;</cite></p>
+<ul class="simple">
+<li><p>Expected Response (Item Does Not Exist):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Item</span> <span class="pre">&lt;name&gt;</span> <span class="pre">Does</span> <span class="pre">Not</span> <span class="pre">Exist&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Stock is Empty):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">empty&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Stock Decreased by Custom Value):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">stock</span> <span class="pre">of</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">decreased</span> <span class="pre">by</span> <span class="pre">&lt;val&gt;&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Failure in Database):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Invalid Custom Deduction Value):
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">&quot;URL</span> <span class="pre">DNE&quot;</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.get_product">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">get_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#get_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.get_product" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to retrieve product information from the inventory.</p>
+<p>This route handles GET requests to retrieve information about a product in the inventory based on the provided product name.</p>
+<p><strong>Method:</strong> GET</p>
+<p><strong>URL:</strong> <cite>/api/inventory/get/&lt;name&gt;</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>name</cite> (str): The name of the product to retrieve information.</p>
+<p><strong>Returns:</strong>
+- If the product is not found, returns a JSON response with a message indicating that the product is not found:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">not</span> <span class="pre">found&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If there’s a failure in the database operation, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the product is found, returns a JSON response with information about the product.</p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: GET
+- URL: <cite>http://your-api-base-url/api/inventory/get/&lt;name&gt;</cite></p>
+<ul>
+<li><p>Expected Response (Product Not Found):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">not</span> <span class="pre">found&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Failure in Database):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DB&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Product Found):
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“name”: “&lt;product_name&gt;”,
+“category”: “&lt;product_category&gt;”,
+“price”: &lt;product_price&gt;,
+“description”: “&lt;product_description&gt;”,
+“count”: &lt;product_quantity&gt;</p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.get_products">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">get_products</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#get_products"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.get_products" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to retrieve information about all products in the inventory.</p>
+<p>This route handles GET requests to retrieve information about all products in the inventory.</p>
+<p><strong>Method:</strong> GET</p>
+<p><strong>URL:</strong> <cite>/api/inventory/get</cite></p>
+<p><strong>Parameters:</strong>
+None</p>
+<p><strong>Returns:</strong>
+- If there’s a failure in displaying the inventory, returns a JSON response with a failure message:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DISPLAYING</span> <span class="pre">INVENTORY&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the inventory is successfully displayed, returns a JSON response with information about all products.</p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: GET
+- URL: <cite>http://your-api-base-url/api/inventory/get</cite></p>
+<ul>
+<li><p>Expected Response (Failure in Displaying Inventory):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;FAILURE</span> <span class="pre">IN</span> <span class="pre">DISPLAYING</span> <span class="pre">INVENTORY&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Inventory Displayed):
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>json
+[</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“name”: “&lt;product_name1&gt;”,
+“category”: “&lt;product_category1&gt;”,
+“price”: &lt;product_price1&gt;,
+“description”: “&lt;product_description1&gt;”,
+“count”: &lt;product_quantity1&gt;</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “&lt;product_name2&gt;”,
+“category”: “&lt;product_category2&gt;”,
+“price”: &lt;product_price2&gt;,
+“description”: “&lt;product_description2&gt;”,
+“count”: &lt;product_quantity2&gt;</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.routes.update_product">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.routes.</span></span><span class="sig-name descname"><span class="pre">update_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory/routes.html#update_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.routes.update_product" title="Link to this definition">¶</a></dt>
+<dd><p>Endpoint to update product information in the inventory.</p>
+<p>This route handles PUT requests to update product information in the inventory based on the provided JSON data.</p>
+<p><strong>Method:</strong> PUT</p>
+<p><strong>URL:</strong> <cite>/api/inventory/update/&lt;name&gt;</cite></p>
+<p><strong>Parameters:</strong>
+- <cite>name</cite> (str): The name of the product to be updated.</p>
+<p><strong>Request Data (JSON):</strong>
+- <cite>name</cite> (str, optional): The new name for the product.
+- <cite>category</cite> (str, optional): The new category for the product.
+- <cite>price</cite> (float, optional): The new price for the product.
+- <cite>description</cite> (str, optional): The new description for the product.
+- <cite>count</cite> (int, optional): The new quantity for the product.</p>
+<p><strong>Returns:</strong>
+- If no product with the provided name is found, returns a JSON response indicating that there’s no item with that name:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;NO</span> <span class="pre">ITEM</span> <span class="pre">WITH</span> <span class="pre">NAME</span> <span class="pre">&lt;name&gt;&quot;}</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If the product is successfully updated, returns a JSON response with a success message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">updated&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If the new product name is already used, returns a JSON response indicating the duplication:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;New</span> <span class="pre">Product</span> <span class="pre">Name</span> <span class="pre">is</span> <span class="pre">already</span> <span class="pre">Used&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>If there’s an error during the database operation, returns a JSON response with a failure message:
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Example Usage (Postman):</strong>
+- Method: PUT
+- URL: <cite>http://your-api-base-url/api/inventory/update/&lt;name&gt;</cite>
+- Body (JSON):</p>
+<blockquote>
+<div><p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“name”: “New Name”,
+“category”: “Updated Category”,
+“price”: 129.99,
+“description”: “Updated description.”,
+“count”: 15</p>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p>Expected Response (No Item with Name):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;NO</span> <span class="pre">ITEM</span> <span class="pre">WITH</span> <span class="pre">NAME</span> <span class="pre">New</span> <span class="pre">Name&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Success):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;Product</span> <span class="pre">updated&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Duplicate Product Name):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;New</span> <span class="pre">Product</span> <span class="pre">Name</span> <span class="pre">is</span> <span class="pre">already</span> <span class="pre">Used&quot;}</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Expected Response (Failure in Database):
+<code class="docutils literal notranslate"><span class="pre">`json</span>
+<span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;DB</span> <span class="pre">ERROR&quot;}</span>
+<span class="pre">`</span></code></p></li>
+</ul>
+<p><strong>Testing:</strong>
+- This endpoint has been tested using Postman.</p>
+</dd></dl>
+
 </section>
 <section id="module-ShipSwift.inventory">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ShipSwift.inventory" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ShipSwift.inventory.create_app">
+<span class="sig-prename descclassname"><span class="pre">ShipSwift.inventory.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ShipSwift/inventory.html#create_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ShipSwift.inventory.create_app" title="Link to this definition">¶</a></dt>
+<dd><p>Create and configure the Flask application for the customers service.</p>
+<p>This function initializes a Flask application, registers blueprints (routes), and returns the configured app.</p>
+<p><strong>Note:</strong>
+- Blueprints are registered to organize and modularize routes. In this case, the <cite>inventory_bp</cite> blueprint is registered</p>
+<blockquote>
+<div><p>with the prefix ‘/api/inventory’.</p>
+</div></blockquote>
+<p><strong>Returns:</strong>
+- An instance of the Flask application configured for the customers service.</p>
+<p><strong>Usage:</strong>
+- Import this function in your main application script to create the Flask app.</p>
+<p><strong>Example:</strong>
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+from __init__ import create_app</p>
+<p>app = create_app()
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -75,7 +457,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">shitswift</a></h1>
+<h1 class="logo"><a href="index.html">shipswift</a></h1>
 
 
 

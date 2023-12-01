@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShipSwift.inventory.routes &#8212; shipswift  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for ShipSwift.inventory.routes</h1><div class="highlight"><pre>
+<span></span><span class="c1">#Inventory routes</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">currentDir = os.path.dirname(os.path.realpath(__file__))</span>
+<span class="sd">connectorPath = os.path.join(currentDir, &quot;..&quot;, &quot;..&quot;)</span>
+<span class="sd">print(connectorPath)</span>
+<span class="sd">sys.path.append(connectorPath)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">DB.dbInventoryf</span> <span class="kn">import</span> <span class="o">*</span> 
+
+
+<span class="n">inventory_bp</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;inventory&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1">#Tested Using Postman</span>
+<div class="viewcode-block" id="add_product">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.add_product">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/add&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_product</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to add a new product to the inventory.</span>
+
+<span class="sd">    This route handles POST requests to add a new product to the inventory based on the provided JSON data.</span>
+
+<span class="sd">    **Method:** POST</span>
+
+<span class="sd">    **URL:** `/api/inventory/add`</span>
+
+<span class="sd">    **Request Data (JSON):**</span>
+<span class="sd">    - `name` (str): The name of the product.</span>
+<span class="sd">    - `category` (str): The category of the product.</span>
+<span class="sd">    - `price` (float): The price of the product.</span>
+<span class="sd">    - `description` (str): The description of the product.</span>
+<span class="sd">    - `count` (int): The quantity of the product.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If a product with the same name already exists in the database, returns a JSON response indicating the duplication:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product with name = &lt;name&gt; already in DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the product is successfully added, returns a JSON response with a success message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product added successfully&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there&#39;s an error during the database operation, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DATABASE&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: POST</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/add`</span>
+<span class="sd">    - Body (JSON):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {</span>
+<span class="sd">        &quot;name&quot;: &quot;New Product&quot;,</span>
+<span class="sd">        &quot;category&quot;: &quot;Electronics&quot;,</span>
+<span class="sd">        &quot;price&quot;: 99.99,</span>
+<span class="sd">        &quot;description&quot;: &quot;A description of the new product.&quot;,</span>
+<span class="sd">        &quot;count&quot;: 10</span>
+<span class="sd">      }</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Duplicate Product):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product with name = New Product already in DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Success):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product added successfully&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Failure in Database):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DATABASE&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span>
+    <span class="n">price</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+    <span class="n">quantity</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Product with name = </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> already in DB&quot;</span><span class="p">})</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Product added successfully&quot;</span><span class="p">})</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">flag</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;FAILURE IN DATABASE&quot;</span><span class="p">})</span></div>
+
+    
+
+
+<span class="c1">#Tested Using Postman</span>
+<div class="viewcode-block" id="update_product">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.update_product">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/update/&lt;name&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">update_product</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to update product information in the inventory.</span>
+
+<span class="sd">    This route handles PUT requests to update product information in the inventory based on the provided JSON data.</span>
+
+<span class="sd">    **Method:** PUT</span>
+
+<span class="sd">    **URL:** `/api/inventory/update/&lt;name&gt;`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `name` (str): The name of the product to be updated.</span>
+
+<span class="sd">    **Request Data (JSON):**</span>
+<span class="sd">    - `name` (str, optional): The new name for the product.</span>
+<span class="sd">    - `category` (str, optional): The new category for the product.</span>
+<span class="sd">    - `price` (float, optional): The new price for the product.</span>
+<span class="sd">    - `description` (str, optional): The new description for the product.</span>
+<span class="sd">    - `count` (int, optional): The new quantity for the product.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If no product with the provided name is found, returns a JSON response indicating that there&#39;s no item with that name:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;NO ITEM WITH NAME &lt;name&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the product is successfully updated, returns a JSON response with a success message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product updated&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the new product name is already used, returns a JSON response indicating the duplication:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;New Product Name is already Used&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there&#39;s an error during the database operation, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: PUT</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/update/&lt;name&gt;`</span>
+<span class="sd">    - Body (JSON):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {</span>
+<span class="sd">        &quot;name&quot;: &quot;New Name&quot;,</span>
+<span class="sd">        &quot;category&quot;: &quot;Updated Category&quot;,</span>
+<span class="sd">        &quot;price&quot;: 129.99,</span>
+<span class="sd">        &quot;description&quot;: &quot;Updated description.&quot;,</span>
+<span class="sd">        &quot;count&quot;: 15</span>
+<span class="sd">      }</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (No Item with Name):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;NO ITEM WITH NAME New Name&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Success):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product updated&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Duplicate Product Name):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;New Product Name is already Used&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Failure in Database):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">updateItem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;NO ITEM WITH NAME </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Product  updated&quot;</span><span class="p">})</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;new Product Name is already Used&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;DB ERROR&quot;</span><span class="p">})</span></div>
+
+
+
+
+
+
+<span class="c1">#Tested using postman</span>
+<div class="viewcode-block" id="deduce_product">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.deduce_product">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/deduce/&lt;name&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">deduce_product</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to deduce the stock of a product in the inventory.</span>
+
+<span class="sd">    This route handles PUT requests to deduce the stock of a product in the inventory based on the provided product name.</span>
+
+<span class="sd">    **Method:** PUT</span>
+
+<span class="sd">    **URL:** `/api/inventory/deduce/&lt;name&gt;`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `name` (str): The name of the product to deduce the stock.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If no product with the provided name is found, returns a JSON response indicating that the item does not exist:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item &lt;name&gt; Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the stock of the product is empty, returns a JSON response indicating that the stock is empty:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is empty&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the stock of the product is successfully decreased by 1, returns a JSON response with a success message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is decreased by 1&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there&#39;s an error during the database operation, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: PUT</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/deduce/&lt;name&gt;`</span>
+
+<span class="sd">    - Expected Response (Item Does Not Exist):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item &lt;name&gt; Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Stock is Empty):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is empty&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Stock Decreased by 1):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is decreased by 1&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Failure in Database):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">deduce</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Item </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> Does Not Exist&quot;</span><span class="p">})</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The stock of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is empty&quot;</span><span class="p">})</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The stock of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is decreased by 1&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;DB ERROR&quot;</span><span class="p">})</span></div>
+
+
+<span class="c1">#deduce custom number </span>
+<span class="c1">#Tested using postman</span>
+<div class="viewcode-block" id="deduce_product2">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.deduce_product2">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/deduce/&lt;name&gt;/&lt;val&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;PUT&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">deduce_product2</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to custom deduce the stock of a product in the inventory.</span>
+
+<span class="sd">    This route handles PUT requests to custom deduce the stock of a product in the inventory based on the provided product name and custom deduction value.</span>
+
+<span class="sd">    **Method:** PUT</span>
+
+<span class="sd">    **URL:** `/api/inventory/deduce/&lt;name&gt;/&lt;val&gt;`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `name` (str): The name of the product to deduce the stock.</span>
+<span class="sd">    - `val` (int): The custom deduction value for the stock. Must be a positive integer.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If no product with the provided name is found, returns a JSON response indicating that the item does not exist:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item &lt;name&gt; Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the stock of the product is empty, returns a JSON response indicating that the stock is empty:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is empty&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the stock of the product is successfully decreased by the custom value, returns a JSON response with a success message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: f&quot;The stock of &lt;name&gt; is decreased by {val}&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there&#39;s an error during the database operation, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the provided custom deduction value is not a positive integer, returns a plain text response indicating that the URL does not exist:</span>
+<span class="sd">      ```</span>
+<span class="sd">      &quot;URL DNE&quot;</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: PUT</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/deduce/&lt;name&gt;/&lt;val&gt;`</span>
+
+<span class="sd">    - Expected Response (Item Does Not Exist):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Item &lt;name&gt; Does Not Exist&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Stock is Empty):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is empty&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Stock Decreased by Custom Value):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;The stock of &lt;name&gt; is decreased by &lt;val&gt;&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Failure in Database):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;DB ERROR&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Invalid Custom Deduction Value):</span>
+<span class="sd">      ```</span>
+<span class="sd">      &quot;URL DNE&quot;</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;URL DNE&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">deduce2</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Item </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> Does Not Exist&quot;</span><span class="p">})</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The stock of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is empty&quot;</span><span class="p">})</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The stock of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is decreased by </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;DB ERROR&quot;</span><span class="p">})</span></div>
+
+
+<span class="c1">#Tested Using Postman</span>
+<div class="viewcode-block" id="get_product">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.get_product">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/get/&lt;name&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_product</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to retrieve product information from the inventory.</span>
+
+<span class="sd">    This route handles GET requests to retrieve information about a product in the inventory based on the provided product name.</span>
+
+<span class="sd">    **Method:** GET</span>
+
+<span class="sd">    **URL:** `/api/inventory/get/&lt;name&gt;`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    - `name` (str): The name of the product to retrieve information.</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If the product is not found, returns a JSON response with a message indicating that the product is not found:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product not found&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If there&#39;s a failure in the database operation, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the product is found, returns a JSON response with information about the product.</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: GET</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/get/&lt;name&gt;`</span>
+
+<span class="sd">    - Expected Response (Product Not Found):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;Product not found&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Failure in Database):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DB&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Product Found):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {</span>
+<span class="sd">        &quot;name&quot;: &quot;&lt;product_name&gt;&quot;,</span>
+<span class="sd">        &quot;category&quot;: &quot;&lt;product_category&gt;&quot;,</span>
+<span class="sd">        &quot;price&quot;: &lt;product_price&gt;,</span>
+<span class="sd">        &quot;description&quot;: &quot;&lt;product_description&gt;&quot;,</span>
+<span class="sd">        &quot;count&quot;: &lt;product_quantity&gt;</span>
+<span class="sd">      }</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#The product is not unique by name, thus might display multiple items</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">retrieve</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">product</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;FAILURE IN DB&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">product</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Product not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">product</span><span class="p">)</span></div>
+
+    
+<span class="c1">#Tested Using Postman</span>
+<div class="viewcode-block" id="get_products">
+<a class="viewcode-back" href="../../../ShipSwift.inventory.html#ShipSwift.inventory.routes.get_products">[docs]</a>
+<span class="nd">@inventory_bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/get&quot;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_products</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Endpoint to retrieve information about all products in the inventory.</span>
+
+<span class="sd">    This route handles GET requests to retrieve information about all products in the inventory.</span>
+
+<span class="sd">    **Method:** GET</span>
+
+<span class="sd">    **URL:** `/api/inventory/get`</span>
+
+<span class="sd">    **Parameters:**</span>
+<span class="sd">    None</span>
+
+<span class="sd">    **Returns:**</span>
+<span class="sd">    - If there&#39;s a failure in displaying the inventory, returns a JSON response with a failure message:</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DISPLAYING INVENTORY&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - If the inventory is successfully displayed, returns a JSON response with information about all products.</span>
+
+<span class="sd">    **Example Usage (Postman):**</span>
+<span class="sd">    - Method: GET</span>
+<span class="sd">    - URL: `http://your-api-base-url/api/inventory/get`</span>
+
+<span class="sd">    - Expected Response (Failure in Displaying Inventory):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      {&quot;message&quot;: &quot;FAILURE IN DISPLAYING INVENTORY&quot;}</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    - Expected Response (Inventory Displayed):</span>
+<span class="sd">      ```json</span>
+<span class="sd">      [</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;name&quot;: &quot;&lt;product_name1&gt;&quot;,</span>
+<span class="sd">          &quot;category&quot;: &quot;&lt;product_category1&gt;&quot;,</span>
+<span class="sd">          &quot;price&quot;: &lt;product_price1&gt;,</span>
+<span class="sd">          &quot;description&quot;: &quot;&lt;product_description1&gt;&quot;,</span>
+<span class="sd">          &quot;count&quot;: &lt;product_quantity1&gt;</span>
+<span class="sd">        },</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;name&quot;: &quot;&lt;product_name2&gt;&quot;,</span>
+<span class="sd">          &quot;category&quot;: &quot;&lt;product_category2&gt;&quot;,</span>
+<span class="sd">          &quot;price&quot;: &lt;product_price2&gt;,</span>
+<span class="sd">          &quot;description&quot;: &quot;&lt;product_description2&gt;&quot;,</span>
+<span class="sd">          &quot;count&quot;: &lt;product_quantity2&gt;</span>
+<span class="sd">        },</span>
+<span class="sd">        ...</span>
+<span class="sd">      ]</span>
+<span class="sd">      ```</span>
+
+<span class="sd">    **Testing:**</span>
+<span class="sd">    - This endpoint has been tested using Postman.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">D</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;FAILURE IN DISPLAYING INVENTORY&quot;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">D</span><span class="p">)</span></div>
+
+    
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">shipswift</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">ShipSwift</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../inventory.html">ShipSwift.inventory</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, donc.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
