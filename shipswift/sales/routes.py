@@ -331,7 +331,46 @@ def History(user):
         else: return jsonify(D)
 
 
+@salesbp.route('/reset', methods = ["DELETE"])
+def reset_sales():
+    """
+    Endpoint to reset the sales database.
 
+    This route handles DELETE requests to reset the sales database. This is used for testing purposes.
 
+    **Method:** DELETE
 
+    **URL:** `/api/sales/reset`
 
+    **Parameters:**
+    None
+
+    **Returns:**
+    - If successful, returns a JSON response with a success message:
+      ```json
+      {"message": "Table has been emptied"}
+      ```
+
+    **Example Usage (Postman):**
+    - Method: DELETE
+    - URL: `http://your-api-base-url/api/sales/reset`
+
+    - Expected Response (Successful):
+      ```json
+      {"message": "Table has been emptied"}
+      ```
+
+    **Note:**
+    - This endpoint resets the sales database by deleting all rows from the `log` table.
+
+    **Testing:**
+    - This endpoint has been tested using Postman.
+    """
+    mydb.reset_session()
+    my_cursor = mydb.cursor()
+      
+    my_cursor.execute(" USE DB ")
+    mydb.commit()
+    my_cursor.execute("DELETE FROM log")
+    mydb.commit()
+    return jsonify({"message": "Table has been emptied"})

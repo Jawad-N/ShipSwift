@@ -17,6 +17,13 @@ mydb.commit()
 ##################### Functions that control the db of the inventory
 
 
+def deleteAll():
+    my_cursor.execute(f"""
+        DELETE FROM inventory;
+    """)
+    mydb.commit()
+    
+
 def add(name, category, price, description, count):
     my_cursor.execute(f"SELECT * FROM inventory WHERE name = \"{name}\"")
     b = True
