@@ -11,7 +11,6 @@ Welcome to ShipSwift's documentation!
    :caption: Contents:
 
    modules
-   customers.routes
 
 Indices and tables
 ==================
