@@ -6,6 +6,6 @@ def create_app():
     app = Flask(__name__)
     # Register blueprints (routes) for the customers service
     from routes import salesbp
-    app.register_blueprint(salesbp, url_prefix='/api/tradeSpace')
+    app.register_blueprint(salesbp, url_prefix='/api/sales')
     return app
 
