@@ -22,6 +22,7 @@ def client():
 
 def test_register_customer(client):
     rv_del = client.delete("/api/customers/reset")
+    print(rv_del.get_json())
     assert rv_del.get_json() == {"message":"Table has been emptied"}
     rv = client.post("/api/customers/register", json={'username': 'username1', 'password': 'password', 'fullName':'fullName', 'address':'address', 'gender':'gender', 'maritalStatus':'maritalStatus', 'wallet':0})
     assert rv.get_json() == {"message": "Customer registered successfully"}

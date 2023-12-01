@@ -69,7 +69,20 @@ def updateCustomer(username, D):
 
 
 def deleteCustomers():
-    my_cursor.execute(f"DELETE FROM customer;")
+    my_cursor.execute(f"DROP TABLE customer;")
+    mydb.commit()
+    my_cursor.execute(f"""
+    CREATE TABLE customer(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username varchar(150) UNIQUE,
+    password varchar(150) NOT NULL,
+    fullName varchar(150) NOT NULL,
+    Address varchar(150) NOT NULL,
+    Gender Boolean NOT NULL,
+    maritalStatus varchar(150) NOT NULL,
+    wallet INT NOT NULL
+    )
+    """)
     mydb.commit()
 
 #You delete the user by his username
