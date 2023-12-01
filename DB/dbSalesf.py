@@ -20,3 +20,4 @@ def addPurchase(user, item, count, price, date):
         VALUES('{user}', '{item}', {count}, {price}, {date})  
                     
 """)
+    

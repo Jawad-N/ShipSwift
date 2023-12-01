@@ -23,3 +23,49 @@ def addPurchase(user, item, count, price): #Note that date is a timestamp so whe
         VALUES('{user}', '{item}', {count}, {price})        
 """)
     mydb.commit()
+
+
+def listItems():
+    try:
+        my_cursor.execute(f"""
+            SELECT * FROM inventory;
+        """)
+        D = {}
+        for(id, name, category, price, description, count) in my_cursor:
+            D[name] = { "price": price }
+        return D
+    except:
+        return False
+
+    
+def listItem(name):
+    try:
+        my_cursor.execute(f"""
+            SELECT * FROM inventory WHERE name = \"{name}\"
+        """)
+        D = {}
+        for(id, name, category, price, description, count) in my_cursor:
+            D[name] = {
+                      "category": category,
+                      "price": price,
+                      "description": description,
+                      "count": count  
+                    }
+        return D
+    except:
+        return False
+
+
+def user_log(user):
+    my_cursor.execute(f"""
+        SELECT * FROM log WHERE buyer = \"{user}\"
+    """)
+    D = {}
+    ctr = 0
+    for(id, buyer, item, count, price, date) in my_cursor:
+        print( (id, buyer, item, count, price, date), count )
+        D[ctr] = (buyer, item, count, price, str(date))
+        ctr = ctr + 1
+    print(D)
+    return D
+    
